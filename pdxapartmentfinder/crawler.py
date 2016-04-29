@@ -21,6 +21,7 @@ import datetime
 import json
 from pandas import DataFrame
 import scrape
+import status
 
 
 # =============================================================================
@@ -39,7 +40,7 @@ else:
 
 
 
-print len(my_dict)  
+print str(len(my_dict) )+" existing scraped listings." 
 
 def merge_two_dicts(x, y):
     '''Merges two dictionaries together
@@ -85,31 +86,40 @@ newdict = {}
 page_numbers = ['']+["?s='"+str(x+1)+'00' for x in range(24)]
 
 
+print "Searching for new listings..."
 # Collect all of the unexplored ID numbers. 
-for page in page_numbers:     
+for it, page in enumerate(page_numbers):     
     unexplored_id_numbers = scrape.numbers(unexplored_id_numbers,my_dict,page)
+    status.printProgress(it, len(page_numbers), prefix = 'Progress:', suffix = 'Complete', decimals = 2, barLength = 25)
     # Sleep at random intervals so that craigslist doesn't disconnect    
-    time.sleep(random.randrange(3,6)) 
+    time.sleep(random.randrange(1,2)) 
 
+
+unexplored_id_numbers = [x for x in unexplored_id_numbers if x not in my_dict or newdict]
+new_numbers = len(unexplored_id_numbers)
+print str(len(unexplored_id_numbers))+" new listings found"
+print ""
+print "Scraping info from new listings..."
 
 while len(unexplored_id_numbers)>0:
-    for i in enumerate(unexplored_id_numbers):
-        id_number = unexplored_id_numbers.pop(-1)
-        # Check if listing info has already been collected
-        if id_number not in my_dict or newdict:
-            # Get info for listing
-            newdict = scrape.info(id_number,newdict)
-            time.sleep(random.randrange(2, 3))
+    id_number = unexplored_id_numbers.pop(-1)
+    it = new_numbers - len(unexplored_id_numbers)
+    status.printProgress(it, new_numbers, prefix = 'Progress:', suffix = 'Complete', decimals = 2, barLength = 50)
+    # Get info for listing
+    newdict = scrape.info(id_number,newdict)
+    time.sleep(random.randrange(1, 2))
 date = str(datetime.datetime.now())[:19].replace(' ','_').replace(':','.')
 # Save the Data  
 
-print 'length of new dict is '+str(len(newdict))
+print str(len(newdict))+' new listings scraped'
+
 
 TodayData = open('data/TodaysData/TodaysData'+date+'.json',"w")
 TodayMasterData = open('data/TodaysMasterData/MasterApartmentData'+date+'.json',"w")
 MasterData = open('data/MasterApartmentData.json',"w")
 json.dump(newdict,TodayData)
-my_dict = merge_two_dicts(my_dict,newdict)   
+my_dict = merge_two_dicts(my_dict,newdict) 
+print "Total number of listings scraped is now "+str(len(my_dict))  
 json.dump(my_dict, TodayMasterData)
 json.dump(my_dict, MasterData)
 TodayData.close()

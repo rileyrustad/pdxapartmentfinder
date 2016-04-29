@@ -30,7 +30,6 @@ def numbers(unexplored_id_numbers, my_dict, page):
     '''
     # Assign page to scrape for Cragslist ID numbers, and get html content.
     # There are 25 pages available, with 100 entries per page.
-    print 'ahhhh numbers'
     url = 'http://portland.craigslist.org/search/mlt/apa'+page
     result = requests.get(url)
     c = result.content
@@ -68,7 +67,6 @@ def info(id_number,my_dict):
     -------
     my_dict : and updated dictionary
     '''
-    print 'infooooo'
     # Scrape page for listing
     url = 'https://portland.craigslist.org/mlt/apa/'+id_number+'.html'
     result = requests.get(url)
