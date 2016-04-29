@@ -59,54 +59,35 @@ def merge_two_dicts(x, y):
     z.update(y)
     return z
 
-
-    '''Adds all unscraped listings data to existing data files
-    
-    my_dict : Dictionary of dictionaries containing all scraped listings.
-        It's structured like this:
-            {'id_number':{variable_1: value_1,
-                          variable_2: value_2}
-               }
-    Outputs
-    -------
-    TodayData : Only data collected from today.
-    
-    TodayMasterData : New data combined with old data. Saved so we can 
-                      reference it later 
-    
-    MasterData: ongoing updated data file.
-    
-    '''
-    # Create dictionary from previous data.
-
-
 unexplored_id_numbers = []
 newdict = {}
-
 page_numbers = ['']+["?s='"+str(x+1)+'00' for x in range(24)]
-
 
 print "Searching for new listings..."
 # Collect all of the unexplored ID numbers. 
 for it, page in enumerate(page_numbers):     
     unexplored_id_numbers = scrape.numbers(unexplored_id_numbers,my_dict,page)
-    status.printProgress(it, len(page_numbers), prefix = 'Progress:', suffix = 'Complete', decimals = 2, barLength = 25)
+    status.printProgress(it, len(page_numbers), 
+                         prefix = 'Progress:', suffix = 'Complete', 
+                         decimals = 2, barLength = 25)
     # Sleep at random intervals so that craigslist doesn't disconnect    
     time.sleep(random.randrange(1,2)) 
 
 
-unexplored_id_numbers = [x for x in unexplored_id_numbers if x not in my_dict or newdict]
 new_numbers = len(unexplored_id_numbers)
-print str(len(unexplored_id_numbers))+" new listings found"
+print str(new_numbers)+" new listings found"
 print ""
 print "Scraping info from new listings..."
 
+# Scrape new listings
 while len(unexplored_id_numbers)>0:
     id_number = unexplored_id_numbers.pop(-1)
     it = new_numbers - len(unexplored_id_numbers)
-    status.printProgress(it, new_numbers, prefix = 'Progress:', suffix = 'Complete', decimals = 2, barLength = 50)
+    status.printProgress(it, new_numbers, prefix = 'Progress:',
+                         suffix = 'Complete', decimals = 2, barLength = 50)
     # Get info for listing
     newdict = scrape.info(id_number,newdict)
+    # Sleep at random intervals so that craigslist doesn't disconnect  
     time.sleep(random.randrange(1, 2))
 date = str(datetime.datetime.now())[:19].replace(' ','_').replace(':','.')
 # Save the Data  
@@ -115,7 +96,8 @@ print str(len(newdict))+' new listings scraped'
 
 
 TodayData = open('data/TodaysData/TodaysData'+date+'.json',"w")
-TodayMasterData = open('data/TodaysMasterData/MasterApartmentData'+date+'.json',"w")
+TodayMasterData = open('data/TodaysMasterData/MasterApartmentData'+date+'.json'
+                        ,"w")
 MasterData = open('data/MasterApartmentData.json',"w")
 json.dump(newdict,TodayData)
 my_dict = merge_two_dicts(my_dict,newdict) 
@@ -125,7 +107,7 @@ json.dump(my_dict, MasterData)
 TodayData.close()
 TodayMasterData.close()
 MasterData.close()
-'''from future import division, print_fucntion'''
+'''from future import division, print_function'''
 '''add status bar'''
 
 '''Send an email, every time it throws an error. email would tell you when and
