@@ -43,18 +43,7 @@ else:
 print str(len(my_dict) )+" existing scraped listings." 
 
 def merge_two_dicts(x, y):
-    '''Merges two dictionaries together
-    
-    Parameters
-    ----------
-    x : a dictionary
-    
-    y : a dictionary
-    
-    Returns
-    -------
-    The time a listing was posted.
-    '''
+    '''Merges two dictionaries together'''
     z = x.copy()
     z.update(y)
     return z
@@ -67,7 +56,7 @@ print "Searching for new listings..."
 # Collect all of the unexplored ID numbers. 
 for it, page in enumerate(page_numbers):     
     unexplored_id_numbers = scrape.numbers(unexplored_id_numbers,my_dict,page)
-    status.printProgress(it, len(page_numbers), 
+    status.printProgress((it+1), len(page_numbers), 
                          prefix = 'Progress:', suffix = 'Complete', 
                          decimals = 2, barLength = 25)
     # Sleep at random intervals so that craigslist doesn't disconnect    
@@ -107,61 +96,3 @@ json.dump(my_dict, MasterData)
 TodayData.close()
 TodayMasterData.close()
 MasterData.close()
-'''from future import division, print_function'''
-'''add status bar'''
-
-'''Send an email, every time it throws an error. email would tell you when and
-where it threw the error, and on which listing, so you can check it out'''
-'''In the next iteration, do some NLP on listings. Rate each lisitng by the 
-the difference between predicted + actual price. Then see if higher quality
-listings use different language.'''
-'''what if craigslist reuses numbers? build in back up for that'''
-'''find the duplicates'''       
-'''what if you added a "date last seen" function. You're already collecting ALL 
-the ID's, just add todays date to all of them. I measures how long entries stay up'''
-'''have all functions organized by classes'''
-'''make a version that saves off 1.just today's entries 2. 
-todays updated dict and 3. updates the master file'''         
-'''find a way for chekcing duplicate listings with different numbers'''
-'''fix bedbath so that it works for everything'''
-'''don't forget to put in a separate file for todays date'''
-'''make a version that runs automatically every day'''
-'''The next interesting thing to collect would be how long a posting stays up for.
-    You already have time posted, but since you're already pulling all of the numbers,
-    you could update each entry to include "last seen". This would work better if 
-    you had continuous collection rather than just once a day.'''
-'''notificiation? it let's you know when it doesn't work'''
-    
-'''FOR WHEN YOU WANT TO USE PANDAS FOR ANALYSIS
-dframe = DataFrame.from_dict(my_dict)
-dataindex = [['price','bed','bath','cat','dog','feet','housingtype',
-'laundry','parking','wheelchair','smoking','content','lat','lon','hasmap','getphotos','date','time']]
-dframe2 = dframe.set_index(dataindex)
-dframe2.to_csv('practice.csv')'''
-
-''' FOR WHEN YOU WANT EMAIL NOTIFICATIONS, 
-        2 functions -> my_dict got longer and my_dict stayed the same
-        
-def send_email(user, pwd, recipient, subject, body):
-    import smtplib
-
-    gmail_user = user
-    gmail_pwd = pwd
-    FROM = user
-    TO = recipient if type(recipient) is list else [recipient]
-    SUBJECT = subject
-    TEXT = body
-
-    # Prepare actual message
-    message = """\From: %s\nTo: %s\nSubject: %s\n\n%s
-    """ % (FROM, ", ".join(TO), SUBJECT, TEXT)
-    try:
-        server = smtplib.SMTP("smtp.gmail.com", 587)
-        server.ehlo()
-        server.starttls()
-        server.login(gmail_user, gmail_pwd)
-        server.sendmail(FROM, TO, message)
-        server.close()
-        print 'successfully sent the mail'
-    except:
-        print "failed to send mail"'''
