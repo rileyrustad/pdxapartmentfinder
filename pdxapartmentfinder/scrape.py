@@ -33,7 +33,7 @@ def numbers(unexplored_id_numbers, my_dict, page):
     url = 'http://portland.craigslist.org/search/mlt/apa'+page
     result = requests.get(url)
     c = result.content
-    soup = BeautifulSoup(c,'lxml')
+    soup = BeautifulSoup(c, "html.parser")
     summary = soup.find("div",{'class':'content'})
     rows = summary.find_all("p",{'class':'row'})
     
@@ -71,7 +71,7 @@ def info(id_number,my_dict):
     url = 'https://portland.craigslist.org/mlt/apa/'+id_number+'.html'
     result = requests.get(url)
     c = result.content
-    soup = BeautifulSoup(c,'lxml')
+    soup = BeautifulSoup(c,"html.parser")
     
     # Check to see if listing has been deleted since you scraped the ID
     if parse.deleted(soup) == True:
