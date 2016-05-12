@@ -383,32 +383,25 @@ def lat_lon(soup):
     lon: a listings longitude
     '''
     
+
     summary = soup.find("div",{'class':'viewposting'})
+#     summary = '<div class="viewposting" data-accuracy="0" data-latitude="" data-longitude="" id="map"></div>'
     if summary == None:
         return np.nan, np.nan
     else:
-        summarystring = str(summary)
-        if summarystring[58:60] == '""' or summarystring[57:59] == '""':
-            return np.nan, np.nan
-        
-        if summarystring[58] == '"':
-            if summarystring[96] == '"':
-                lat = summarystring[59:68]
-                lon = summarystring[86:96]
-                return float(lat), float(lon)
-            else:
-                lat = summarystring[59:68]
-                lon = summarystring[86:97]
-                return float(lat), float(lon)
+        x = []
+        for _,i in enumerate(str(summary)):
+            if i == '"':
+                x.append(_)
+
+        lat = str(summary)[x[4]+1:x[5]]
+        lon = str(summary)[x[6]+1:x[7]]
+        if len(lat) > 0 and len(lon) > 0:
+            return lat, lon
         else:
-            if summarystring[95] == '"':
-                lat = summarystring[58:67]
-                lon = summarystring[85:95]
-                return float(lat), float(lon)
-            else:
-                lat = summarystring[58:67]
-                lon = summarystring[85:96]
-                return float(lat), float(lon)
+            return np.nan, np.nan
+
+    return LatLon(soup)
         
 def has_map(soup):
     '''Determines if a listing has a map.
