@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from flask.ext.bootstrap import Bootstrap
 app = Flask(__name__)
 boostrap = Bootstrap(app)
@@ -9,8 +9,12 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/scorer/<id_number>')
-def scorer(id_number):
+@app.route('/scorer', methods=['GET', 'POST'])
+def scorer():
+	id_number = None
+	if request.method == 'POST' and 'id_number' in request.form:
+		id_number = request.form['id_number']
+
 	attrs = ['bed','bath','feet','dog','cat','content',
 	'date','getphotos','hasmap','housingtype','lat','long','laundry',
 	'parking','price','smoking','time','wheelchair']

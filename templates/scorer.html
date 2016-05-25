@@ -7,7 +7,14 @@
 <h1>Name of Apartment Listing</h1>
 
 <p>place holder for gif of how to get ID number</p>
-<p>place holder for search bar</p>
+<form method="POST" action="">
+            What is the listing ID Number? <input type="text" name="id_number">
+            <input type="submit" name="submit" value="Submit">
+        </form>
+        {% if id_number %}
+            <h1>The ID Number is {{ id_number }}!</h1>
+        {% endif %}
+
 <table>
     <tr>
         <th>Attribute Type</th>
