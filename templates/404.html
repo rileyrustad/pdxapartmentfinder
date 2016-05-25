@@ -4,5 +4,5 @@
 
 {% block page_content %}
     <h1>Whoops! I don't think we have a page for that</h1>
-    <a class="navbar-brand" href="http://127.0.0.1:5000/">Return Home?</a>
+    <a class="navbar-brand" href="{{ url_for('index') }}">Return Home?</a>
 {% endblock %}
