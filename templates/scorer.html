@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Insert Listing Title{{ city }}{% endblock %}
+
+
+{% block page_content %}
+<h1>Name of Apartment Listing</h1>
+
+<p>place holder for gif of how to get ID number</p>
+<p>place holder for search bar</p>
+<table>
+    <tr>
+        <th>Attribute Type</th>
+        <th>{{id_number}}</th>
+
+    </tr>
+    {% for attr in attrs %}
+    <tr>
+        <td>{{ attr }}</td>
+        <td>{{my_dict[attr]}}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
