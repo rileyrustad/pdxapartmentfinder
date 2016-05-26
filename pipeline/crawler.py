@@ -22,6 +22,8 @@ import json
 from pandas import DataFrame
 import scrape
 import status
+from datetime import date, datetime
+from collections import defaultdict
 
 
 # =============================================================================
@@ -78,21 +80,36 @@ while len(unexplored_id_numbers)>0:
     newdict = scrape.info(id_number,newdict)
     # Sleep at random intervals so that craigslist doesn't disconnect  
     time.sleep(random.randrange(1, 2))
-date = str(datetime.datetime.now())[:19].replace(' ','_').replace(':','.')
 # Save the Data  
 
 print str(len(newdict))+' new listings scraped'
 
+def days_between(d1, d2):
+    d1 = datetime.strptime(d1, "%Y-%m-%d")
+    d2 = datetime.strptime(d2, "%Y-%m-%d")
+    return abs((d2 - d1).days)
+
+
 
 TodayData = open('data/TodaysData/TodaysData'+date+'.json',"w")
-TodayMasterData = open('data/TodaysMasterData/MasterApartmentData'+date+'.json'
-                        ,"w")
 MasterData = open('data/MasterApartmentData.json',"w")
+Day90Data = open('data/Day90ApartmentData.json',"w")
+
 json.dump(newdict,TodayData)
 my_dict = merge_two_dicts(my_dict,newdict) 
-print "Total number of listings scraped is now "+str(len(my_dict))  
-json.dump(my_dict, TodayMasterData)
 json.dump(my_dict, MasterData)
+
+print "Total number of listings scraped is now "+str(len(my_dict))
+dict90 = defaultdict(dict)
+today = date.today()
+for entry in my_dict:
+    if  days_between(str(today), my_dict[entry]['date']) <= 90:
+        dict90[entry] = my_dict[entry]
+print str(len(dict90))+ "listings posted in the last 90 days."
+
+
+json.dump(dict90, Day90Data)
+
 TodayData.close()
-TodayMasterData.close()
 MasterData.close()
+Day90Data.close()
