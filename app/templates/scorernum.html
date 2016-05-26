@@ -1,0 +1,17 @@
+<h1>Input the listing ID Number</h1>
+
+<p>place holder for gif of how to get ID number</p>
+<p>place holder for search bar</p>
+<table>
+    <tr>
+        <th>Attribute Type</th>
+        <th>{{id_number}}</th>
+
+    </tr>
+    {% for attr in attrs %}
+    <tr>
+        <td>{{ attr }}</td>
+        <td>{{my_dict[attr]}}</td>
+    </tr>
+    {% endfor %}
+</table>
