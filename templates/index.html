@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}PDX Apartment Scorer{% endblock %}
+
+{% block page_content %}
+
+<h1>Welcome to PDX Apartment Finder!</h1>
+<h3>Never get Ripped off again!</h3>
+<p>How much should you pay for your apartment?</p>
+
+<hr>
+
+<a href="{{ url_for('scorer') }}">You can test already listed rentals</a>
+
+<p> or you can play with the variables and find the value of a theoretical rental</p>
+
+{% endblock %}

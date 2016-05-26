@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}Insert Listing Title{{ city }}{% endblock %}
+
+
+{% block page_content %}
+<h1>Name of Apartment Listing</h1>
+
+<p>place holder for gif of how to get ID number</p>
+    {{ wtf.quick_form(form) }}
+    
+    {% if id_number %}
+    <h1>This listing is {{ id_number }} by {{ id_number }}</h1>
+    {% endif %}
+
+<table>
+    <tr>
+        <th>Attribute Type</th>
+        <th>{{id_number}}</th>
+
+    </tr>
+    {% for attr in attrs %}
+    <tr>
+        <td>{{ attr }}</td>
+        <td>{{my_dict[attr]}}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
