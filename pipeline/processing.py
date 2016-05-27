@@ -6,6 +6,23 @@ from collections import Counter
 import operator
 
 #========================================================
+'''
+def days_between(d1, d2):
+    d1 = datetime.strptime(d1, "%Y-%m-%d")
+    d2 = datetime.strptime(d2, "%Y-%m-%d")
+    return abs((d2 - d1).days)
+    
+Day90Data = open('data/Day90ApartmentData.json',"w")
+dict90 = defaultdict(dict)
+today = date.today()
+for entry in my_dict:
+    if  days_between(str(today), my_dict[entry]['date']) <= 90:
+        dict90[entry] = my_dict[entry]
+print str(len(dict90))+ " listings posted in the last 90 days."
+json.dump(dict90, Day90Data)
+Day90Data.close()
+'''#goes in name = main 
+
 
 #open the data from the last 90 days
 with open('data/Day90ApartmentData.json') as f:

@@ -84,32 +84,15 @@ while len(unexplored_id_numbers)>0:
 
 print str(len(newdict))+' new listings scraped'
 
-def days_between(d1, d2):
-    d1 = datetime.strptime(d1, "%Y-%m-%d")
-    d2 = datetime.strptime(d2, "%Y-%m-%d")
-    return abs((d2 - d1).days)
-
-
-
 TodayData = open('data/TodaysData/TodaysData'+str(date)+'.json',"w")
 MasterData = open('data/MasterApartmentData.json',"w")
-Day90Data = open('data/Day90ApartmentData.json',"w")
 
 json.dump(newdict,TodayData)
 my_dict = merge_two_dicts(my_dict,newdict) 
 json.dump(my_dict, MasterData)
 
 print "Total number of listings scraped is now "+str(len(my_dict))
-dict90 = defaultdict(dict)
-today = date.today()
-for entry in my_dict:
-    if  days_between(str(today), my_dict[entry]['date']) <= 90:
-        dict90[entry] = my_dict[entry]
-print str(len(dict90))+ " listings posted in the last 90 days."
-
-
-json.dump(dict90, Day90Data)
 
 TodayData.close()
 MasterData.close()
-Day90Data.close()
+
