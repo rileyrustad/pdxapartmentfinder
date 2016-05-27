@@ -23,9 +23,11 @@ def index():
 def scorer():
 	id_number = None
 	form = NameForm()
+	my_dict = None
 	if form.validate_on_submit():
 		id_number = form.id_number.data
 		form.id_number.data = ''
+		my_dict = sub
 
 	attrs = ['bed','bath','feet','dog','cat','content',
 	'date','getphotos','hasmap','housingtype','lat','long','laundry',

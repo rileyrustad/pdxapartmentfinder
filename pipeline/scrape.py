@@ -8,6 +8,8 @@ from bs4 import BeautifulSoup
 import lxml
 import parse
 import numpy as np
+from datetime import date
+
 def numbers(unexplored_id_numbers, my_dict, page):
     '''A Craigslist Apartment ID number scraper.
     
@@ -36,7 +38,7 @@ def numbers(unexplored_id_numbers, my_dict, page):
     soup = BeautifulSoup(c, "html.parser")
     summary = soup.find("div",{'class':'content'})
     rows = summary.find_all("p",{'class':'row'})
-    
+    today = date.today()
     # Create a list of all available ID numbers
     new_id_numbers = []    
     for i in rows:
@@ -47,8 +49,10 @@ def numbers(unexplored_id_numbers, my_dict, page):
     for number in new_id_numbers:
         if number not in my_dict:
             unexplored_id_numbers.append(number)
+        else:
+            my_dict[number]['lastseen'] = str(today)
 
-    return unexplored_id_numbers 
+    return unexplored_id_numbers, my_dict
 
 def info(id_number,my_dict):
     '''Scrape data from each craigslist ad.

@@ -57,7 +57,7 @@ page_numbers = ['']+["?s='"+str(x+1)+'00' for x in range(24)]
 print "Searching for new listings..."
 # Collect all of the unexplored ID numbers. 
 for it, page in enumerate(page_numbers):     
-    unexplored_id_numbers = scrape.numbers(unexplored_id_numbers,my_dict,page)
+    unexplored_id_numbers, my_dict = scrape.numbers(unexplored_id_numbers,my_dict,page)
     status.printProgress((it+1), len(page_numbers), 
                          prefix = 'Progress:', suffix = 'Complete', 
                          decimals = 2, barLength = 25)
@@ -91,7 +91,7 @@ def days_between(d1, d2):
 
 
 
-TodayData = open('data/TodaysData/TodaysData'+date+'.json',"w")
+TodayData = open('data/TodaysData/TodaysData'+str(date)+'.json',"w")
 MasterData = open('data/MasterApartmentData.json',"w")
 Day90Data = open('data/Day90ApartmentData.json',"w")
 
@@ -105,7 +105,7 @@ today = date.today()
 for entry in my_dict:
     if  days_between(str(today), my_dict[entry]['date']) <= 90:
         dict90[entry] = my_dict[entry]
-print str(len(dict90))+ "listings posted in the last 90 days."
+print str(len(dict90))+ " listings posted in the last 90 days."
 
 
 json.dump(dict90, Day90Data)
