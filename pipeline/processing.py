@@ -51,14 +51,23 @@ u'cat', u'hasmap', u'wheelchair', u'housingtype'
 continuous_features = ['content', 'price', 'feet', 'getphotos','long', 'lat']
 discrete_features = ['laundry', 'bed', 'bath', 'housingtype', 'parking']
 
-imputables = {}
 
-for variable in continuous_features:
-	imputables[variable] = averager(my_dict, variable)
+def imputables_getter(my_dict):
+	imputables = {}
+	continuous_features = ['content', 'price', 'feet', 'getphotos','long', 
+		'lat']
+	discrete_features = ['laundry', 'bed', 'bath', 'housingtype', 'parking']
 
-for variable in discrete_features:
-	imputables[variable] = moder(my_dict, variable)
+	imputables = {}
 
+	for variable in continuous_features:
+		imputables[variable] = averager(my_dict, variable)
+
+	for variable in discrete_features:
+		imputables[variable] = moder(my_dict, variable)
+	
+	return imputables
+imputables = imputables_getter(my_dict)
 
 
 def imputer(listing, imputables):
@@ -69,6 +78,9 @@ def imputer(listing, imputables):
 		if entry == 'wheelchair':
 			if listing[entry] != 'wheelchair access':
 				listing[entry] = 'no wheelchair access'
+		if entry == 'bath':
+			if listing[entry] == 'shared' or listing[entry] == 'split':
+				listing[entry] = .5 
 		try:
 			if np.isnan(listing[entry]):
 				listing[entry]=imputables[entry]
@@ -82,16 +94,39 @@ for listing in my_dict:
 	my_dict[listing] = imputer(my_dict[listing],imputables)
 
 
-processed = open('data/ProcessedDay90ApartmentData.json',"w")
-json.dump(my_dict, processed)
-processed.close()
-
-#print imputer(my_dict['5467011165'],imputables)
-
-# def processor(my_dict, entry):
-# 	print my_dict[entry].keys()
+dframe = DataFrame(my_dict).T
 
 
-# print processor(my_dict,'5590856490')
+
+
+dframe = dframe[['content', 'laundry',  'price', 'dog', 'bed', 
+'bath', 'feet', 'long', 'parking', 'lat', 'smoking', 'getphotos', 
+'cat', 'hasmap', 'wheelchair', 'housingtype']]
+
+dframe = pd.get_dummies(dframe, columns = ['laundry', 'parking', 'smoking', 
+	'wheelchair', 'housingtype'])
+
+
+from sklearn.cross_validation import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(
+	dframe.drop('price', axis = 1), dframe.price, test_size=0.33)
+
+
+
+
+from sklearn.ensemble import RandomForestRegressor
+reg = RandomForestRegressor()
+reg.fit(X_train, y_train)
+
+
+
+# processed = open('data/ProcessedDay90ApartmentData.json',"w")
+# json.dump(my_dict, processed)
+# processed.close()
+
+if __name__ == '__main__':
+	run()
+
+
 
 
