@@ -23,7 +23,7 @@ from pandas import DataFrame
 import scrape
 import status
 from datetime import date, datetime
-from collections import defaultdict
+
 
 
 # =============================================================================

@@ -3,6 +3,12 @@ from flask.ext.bootstrap import Bootstrap
 from flask.ext.wtf import Form
 from wtforms import StringField, SubmitField
 from wtforms.validators import Required, Length
+import sys
+sys.path.append('/Users/mac28/src/pdxapartmentfinder/pipeline')
+
+from predictor import predict
+
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'top secret!'
@@ -27,7 +33,7 @@ def scorer():
 	if form.validate_on_submit():
 		id_number = form.id_number.data
 		form.id_number.data = ''
-		my_dict = sub
+		# my_dict = 
 
 	attrs = ['bed','bath','feet','dog','cat','content',
 	'date','getphotos','hasmap','housingtype','lat','long','laundry',
