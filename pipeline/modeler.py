@@ -8,10 +8,11 @@ import pickle
 def clusterer(X, Y,neighborhoods):
     neighbors = []
     for i in neighborhoods:
-        distance = ((i[0]-X)**2 + (i[1]-Y)**2)
+        distance = ((i[0]-float(X))**2 + (i[1]-float(Y))**2)
         neighbors.append(distance)
     closest = min(neighbors)
     return neighbors.index(closest)
+
 if __name__ == '__main__':
 	with open('data/MasterApartmentData.json') as f:
 	    my_dict = json.load(f)

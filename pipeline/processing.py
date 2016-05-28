@@ -4,30 +4,15 @@ from pandas import DataFrame, Series
 import json
 from collections import Counter
 import operator
+import os.path
+from collections import defaultdict
+from datetime import date, datetime
 
 #========================================================
-'''
 def days_between(d1, d2):
-    d1 = datetime.strptime(d1, "%Y-%m-%d")
-    d2 = datetime.strptime(d2, "%Y-%m-%d")
-    return abs((d2 - d1).days)
-    
-Day90Data = open('data/Day90ApartmentData.json',"w")
-dict90 = defaultdict(dict)
-today = date.today()
-for entry in my_dict:
-    if  days_between(str(today), my_dict[entry]['date']) <= 90:
-        dict90[entry] = my_dict[entry]
-print str(len(dict90))+ " listings posted in the last 90 days."
-json.dump(dict90, Day90Data)
-Day90Data.close()
-'''#goes in name = main 
-
-
-#open the data from the last 90 days
-with open('data/Day90ApartmentData.json') as f:
-    my_dict = json.load(f)
-
+	    d1 = datetime.strptime(d1, "%Y-%m-%d")
+	    d2 = datetime.strptime(d2, "%Y-%m-%d")
+	    return abs((d2 - d1).days)
 
 def averager(my_dict, key):
 	temp = []
@@ -52,41 +37,6 @@ def moder(my_dict, key):
 	except TypeError:
 		return mode
 
-
-"""All of the variables in the dictionary are:
-u'available', u'content', u'laundry', u'furnished', u'price',
-u'time', u'dog', u'bed', u'bath', u'feet', u'date', u'long', u'parking',
-u'lat', u'smoking', u'getphotos', u'cat', u'hasmap', u'wheelchair', 
-u'housingtype', u'lastseen']"""
-
-"""All variables used: u'content', u'laundry',  u'price', u'dog', u'bed', 
-u'bath', u'feet', u'long', u'parking', u'lat', u'smoking', u'getphotos', 
-u'cat', u'hasmap', u'wheelchair', u'housingtype'
-"""
-
-#go back and adjust the gis variables
-continuous_features = ['content', 'price', 'feet', 'getphotos','long', 'lat']
-discrete_features = ['laundry', 'bed', 'bath', 'housingtype', 'parking']
-
-
-def imputables_getter(my_dict):
-	imputables = {}
-	continuous_features = ['content', 'price', 'feet', 'getphotos','long', 
-		'lat']
-	discrete_features = ['laundry', 'bed', 'bath', 'housingtype', 'parking']
-
-	imputables = {}
-
-	for variable in continuous_features:
-		imputables[variable] = averager(my_dict, variable)
-
-	for variable in discrete_features:
-		imputables[variable] = moder(my_dict, variable)
-	
-	return imputables
-imputables = imputables_getter(my_dict)
-
-
 def imputer(listing, imputables):
 	for entry in listing:
 		if entry == 'smoking':
@@ -107,42 +57,107 @@ def imputer(listing, imputables):
 			continue
 	return listing
 
-for listing in my_dict:
-	my_dict[listing] = imputer(my_dict[listing],imputables)
+def imputables_getter(my_dict):
+	imputables = {}
+	continuous_features = ['content', 'price', 'feet', 'getphotos','long', 
+		'lat']
+	discrete_features = ['laundry', 'bed', 'bath', 'housingtype', 'parking']
 
+	imputables = {}
 
-dframe = DataFrame(my_dict).T
+	for variable in continuous_features:
+		imputables[variable] = averager(my_dict, variable)
 
+	for variable in discrete_features:
+		imputables[variable] = moder(my_dict, variable)
+	
+	return imputables
 
-
-
-dframe = dframe[['content', 'laundry',  'price', 'dog', 'bed', 
-'bath', 'feet', 'long', 'parking', 'lat', 'smoking', 'getphotos', 
-'cat', 'hasmap', 'wheelchair', 'housingtype']]
-
-dframe = pd.get_dummies(dframe, columns = ['laundry', 'parking', 'smoking', 
-	'wheelchair', 'housingtype'])
-
-
-from sklearn.cross_validation import train_test_split
-X_train, X_test, y_train, y_test = train_test_split(
-	dframe.drop('price', axis = 1), dframe.price, test_size=0.33)
-
-
-
-
-from sklearn.ensemble import RandomForestRegressor
-reg = RandomForestRegressor()
-reg.fit(X_train, y_train)
-
-
-
-# processed = open('data/ProcessedDay90ApartmentData.json',"w")
-# json.dump(my_dict, processed)
-# processed.close()
 
 if __name__ == '__main__':
-	run()
+	filepath =  'data/MasterApartmentData.json'
+	if os.path.isfile(filepath) == True:
+	    f = open(filepath)      
+	    my_dict = json.load(f)
+	    f.close()
+# If the file doesn't exist, create that file.
+	else:
+	    my_dict = {}
+
+	# Create 90 Day data file.
+	Day90Data = open('data/Day90ApartmentData.json',"w")
+	dict90 = defaultdict(dict)
+	today = date.today()
+
+	# check entries in master data, and include those from the last 90 days
+	for entry in my_dict:
+	    if  days_between(str(today), my_dict[entry]['date']) <= 90:
+	        dict90[entry] = my_dict[entry]
+	print str(len(dict90))+ " listings posted in the last 90 days."
+	json.dump(dict90, Day90Data)
+	Day90Data.close()
+	
+	my_dict = dict90
+
+
+	# #open the data from the last 90 days
+	# with open('data/Day90ApartmentData.json', r) as f:
+	#     my_dict = json.load(f)
+
+	"""All of the variables in the dictionary are:
+	u'available', u'content', u'laundry', u'furnished', u'price',
+	u'time', u'dog', u'bed', u'bath', u'feet', u'date', u'long', u'parking',
+	u'lat', u'smoking', u'getphotos', u'cat', u'hasmap', u'wheelchair', 
+	u'housingtype', u'lastseen']"""
+
+	"""All variables used: u'content', u'laundry',  u'price', u'dog', u'bed', 
+	u'bath', u'feet', u'long', u'parking', u'lat', u'smoking', u'getphotos', 
+	u'cat', u'hasmap', u'wheelchair', u'housingtype'
+	"""
+
+	#go back and adjust the gis variables
+	continuous_features = ['content', 'price', 'feet', 'getphotos','long', 
+							'lat']
+	discrete_features = ['laundry', 'bed', 'bath', 'housingtype', 'parking']
+
+
+	imputables = imputables_getter(my_dict)
+
+	for listing in my_dict:
+		my_dict[listing] = imputer(my_dict[listing],imputables)
+
+
+	dframe = DataFrame(my_dict).T
+
+
+
+
+	dframe = dframe[['content', 'laundry',  'price', 'dog', 'bed', 
+	'bath', 'feet', 'long', 'parking', 'lat', 'smoking', 'getphotos', 
+	'cat', 'hasmap', 'wheelchair', 'housingtype']]
+
+	dframe = pd.get_dummies(dframe, columns = ['laundry', 'parking', 'smoking', 
+		'wheelchair', 'housingtype'])
+
+
+	# from sklearn.cross_validation import train_test_split
+	# X_train, X_test, y_train, y_test = train_test_split(
+	# 	dframe.drop('price', axis = 1), dframe.price, test_size=0.33)
+
+
+
+
+	# from sklearn.ensemble import RandomForestRegressor
+	# reg = RandomForestRegressor()
+	# reg.fit(X_train, y_train)
+
+
+
+	# processed = open('data/ProcessedDay90ApartmentData.json',"w")
+	# json.dump(my_dict, processed)
+	# processed.close()
+
+
 
 
 
