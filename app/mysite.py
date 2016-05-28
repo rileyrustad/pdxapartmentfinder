@@ -3,10 +3,12 @@ from flask.ext.bootstrap import Bootstrap
 from flask.ext.wtf import Form
 from wtforms import StringField, SubmitField
 from wtforms.validators import Required, Length
+import json
 import sys
 sys.path.append('/Users/mac28/src/pdxapartmentfinder/pipeline')
 
 from predictor import predict
+dict90 = json.load(open('../pipeline/data/Day90ApartmentData.json'))
 
 
 
@@ -30,21 +32,26 @@ def scorer():
 	id_number = None
 	form = NameForm()
 	my_dict = None
+	pred, diff, no_assumptions, assumptions = None, None, None, None
+
+
 	if form.validate_on_submit():
 		id_number = form.id_number.data
 		form.id_number.data = ''
-		# my_dict = 
+		pred, diff, no_assumptions, assumptions = predict(
+			id_number, dict90,'../pipeline/data/')
+		my_dict = assumptions
+		
 
 	attrs = ['bed','bath','feet','dog','cat','content',
-	'date','getphotos','hasmap','housingtype','lat','long','laundry',
-	'parking','price','smoking','time','wheelchair']
+	'getphotos','hasmap','housingtype','lat','long','laundry',
+	'parking','price','smoking','wheelchair']
 
-	temp_dict = {'bed':'1','bath':'1.5','feet':'1000','dog':'yes','cat':'yes','content':'500',
-	'date':'today','getphotos':2,'hasmap':'yes','housingtype':'apartment','lat':'#', 'long':'#',
-	'laundry': 'in unit','parking':'street parking','price':'$500','smoking':'no smoking','time':'12:00',
-	'wheelchair':'no wheelchair access'}
-	my_dict = temp_dict
-	return render_template('scorer.html', id_number=id_number, attrs=attrs,my_dict=my_dict,form=form)
+	
+	
+	return render_template('scorer.html', id_number=id_number, attrs=attrs,
+		my_dict=my_dict,form=form,pred=pred, diff=diff, 
+		no_assumptions=no_assumptions,assumptions = assumptions)
 
 @app.errorhandler(404)
 def not_found(e):
@@ -52,3 +59,15 @@ def not_found(e):
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
+
+
+
+
+
+
+
+
+
+

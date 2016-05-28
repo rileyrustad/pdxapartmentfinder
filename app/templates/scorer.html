@@ -11,7 +11,11 @@
     {{ wtf.quick_form(form) }}
     
     {% if id_number %}
-    <h1>This listing is {{ id_number }} by {{ id_number }}</h1>
+    {% if diff > 0 %}
+    <h1 style="color:red;">This listing is overpriced by ${{ diff }}</h1>
+    {% endif %}
+    {% if diff < 0 %}
+    <h1 style="color:green;">This listing is underpriced by ${{ diff }}</h1>
     {% endif %}
 
 <table>
@@ -27,4 +31,5 @@
     </tr>
     {% endfor %}
 </table>
+    {% endif %}
 {% endblock %}
