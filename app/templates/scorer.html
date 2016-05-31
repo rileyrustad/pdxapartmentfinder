@@ -5,12 +5,19 @@
 
 
 {% block page_content %}
-<h1>Name of Apartment Listing</h1>
+{% if not id_number %}
+<h1>Which listing would you like to test?</h1>
+{% endif %}
+{% if id_number %}
+<h1>{{title}}</h1>
+{% endif %}
 
-<p>place holder for gif of how to get ID number</p>
+<img src="HowTo.png" width="100" height="80" alt="how to">
     {{ wtf.quick_form(form) }}
     
     {% if id_number %}
+    <h1>The PDX Apartment Finder predicted price is ${{ pred }}</h1>
+
     {% if diff > 0 %}
     <h1 style="color:red;">This listing is overpriced by ${{ diff }}</h1>
     {% endif %}

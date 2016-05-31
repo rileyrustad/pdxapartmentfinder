@@ -66,11 +66,11 @@ def predict(listing, my_dict, path):
 	dframe = dframe[columns]
 
 	price = my_info['price']
-
+	title = my_info1[listing]['title']
 
 	pred = reg.predict(dframe.drop('price',axis=1))
 	diff = price - pred
-	return pred, diff[0], my_info1, my_info
+	return pred[0], diff[0], my_info1, my_info, title
 
 if __name__ == '__main__':
 	listing = '5580713155'

@@ -32,13 +32,14 @@ def scorer():
 	id_number = None
 	form = NameForm()
 	my_dict = None
-	pred, diff, no_assumptions, assumptions = None, None, None, None
+	pred, diff, no_assumptions, assumptions, title = (None, 
+		None, None, None, None)
 
 
 	if form.validate_on_submit():
 		id_number = form.id_number.data
 		form.id_number.data = ''
-		pred, diff, no_assumptions, assumptions = predict(
+		pred, diff, no_assumptions, assumptions,title = predict(
 			id_number, dict90,'../pipeline/data/')
 		my_dict = assumptions
 		
@@ -51,7 +52,7 @@ def scorer():
 	
 	return render_template('scorer.html', id_number=id_number, attrs=attrs,
 		my_dict=my_dict,form=form,pred=pred, diff=diff, 
-		no_assumptions=no_assumptions,assumptions = assumptions)
+		no_assumptions=no_assumptions,assumptions = assumptions,title=title)
 
 @app.errorhandler(404)
 def not_found(e):

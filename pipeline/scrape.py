@@ -100,6 +100,7 @@ def info(id_number,my_dict):
         getphotos = parse.photos(soup)
         date, time = parse.time_posted(soup)
         available = parse.available(attributes)
+        title = parse.title(soup)
         
     # Add a new entry to my_dict
         my_dict[id_number]={'price':price,'bed':bed,'bath':bath,'cat':cat,
@@ -107,7 +108,9 @@ def info(id_number,my_dict):
         'parking':parking,'wheelchair':wheelchair,'smoking':smoking,
         'content':content,'lat':lat,'long':lon,'hasmap':hasmap,
         'getphotos':getphotos,'date':date,'time':time,'furnished':furnished,
-        'available':available}
+        'available':available,'title':title}
         #print GetAttributes(soup)  
         return my_dict
 
+if __name__ == '__main__':
+    print info('5607570715',{})

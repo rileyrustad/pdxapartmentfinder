@@ -3,6 +3,7 @@
 '''
 #from future import division, print_function
 import numpy as np
+import re
 
 def attributes(soup):
     '''Parses HTML down to just the attributes of a listing.
@@ -453,6 +454,42 @@ def time_posted(soup):
     date = str(summary)[32:42]
     time = str(summary)[43:51]
     return date, time
+
+from HTMLParser import HTMLParser
+
+class MLStripper(HTMLParser):
+    def __init__(self):
+        self.reset()
+        self.fed = []
+    def handle_data(self, d):
+        self.fed.append(d)
+    def get_data(self):
+        return ''.join(self.fed)
+
+def strip_tags(html):
+    s = MLStripper()
+    s.feed(html)
+    return s.get_data()
+
+
+
+def remove_tags(text):
+    TAG_RE = re.compile(r'<[^>]+>')
+    return TAG_RE.sub('', text)
+
+def title(soup):
+    '''Determines when a posting was listed
+    
+    Parameters
+    ----------
+    soup : Scraped HTML parsed down to just the content of the page.
+    
+    Returns
+    -------
+    The time a listing was posted.
+    '''
+    summary = soup.find("title")
+    return remove_tags(str(summary))
 
 
 
